@@ -1,0 +1,76 @@
+/* style.css - visual styles for study-programs-site */
+:root{
+  --bg: linear-gradient(180deg,#f8fbff,#f6fff8);
+  --card:#fff;
+  --muted:#6b7280;
+  --accent:#6c63ff;
+  --radius:12px;
+  --tag-offline:#74b9ff;
+  --tag-online:#55efc4;
+  --tag-hybrid:#ffeaa7;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg); color:#0b1220;
+}
+header{ padding:18px; text-align:center; background: linear-gradient(90deg,#a1c4fd,#c2e9fb); border-bottom-left-radius:14px; border-bottom-right-radius:14px;}
+.topbar{display:flex; justify-content:space-between; align-items:center; gap:12px; max-width:1200px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; color:#0b1220;}
+.brand-icon{width:36px;height:36px}
+.lang-btn{background:#fff;border:0;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:700}
+.hero h1{margin:8px 0 0}
+.hero p{margin:6px 0 0;color:var(--muted)}
+
+.wrap{max-width:1200px;margin:20px auto;padding:0 18px 80px}
+
+.tabs{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:18px}
+.tab-btn{background:var(--card); border-radius:999px; padding:8px 12px; font-weight:700; border:1px solid rgba(0,0,0,0.06); cursor:pointer}
+.tab-btn.active{background:linear-gradient(90deg,#f3f0ff,#fff8f0); box-shadow:0 12px 26px rgba(108,99,255,0.06)}
+
+.grid{display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));}
+
+.card{background:var(--card); border-radius:var(--radius); padding:14px; box-shadow:0 10px 25px rgba(23,26,60,0.06); border:1px solid rgba(12,18,30,0.03); display:flex; flex-direction:column; gap:8px; min-height:140px; transform:translateY(0); transition:transform .22s; opacity:0}
+.card.show{animation:fadeUp .36s ease forwards}
+.card:hover{transform:translateY(-6px); box-shadow:0 18px 40px rgba(12,18,30,0.09)}
+
+.card-head{display:flex; align-items:center; gap:12px}
+.icon{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#9b8cff); color:#fff}
+.title{font-weight:800}
+.subtitle{color:var(--muted); font-size:0.9rem}
+
+.meta{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.tag{padding:6px 8px; border-radius:10px; font-weight:700; font-size:0.82rem}
+.tag.offline{background:var(--tag-offline); color:#073763}
+.tag.online{background:var(--tag-online); color:#075b36}
+.tag.hybrid{background:var(--tag-hybrid); color:#5b3a00}
+
+.price{margin-left:auto; font-weight:900}
+
+.desc{color:var(--muted); font-size:0.92rem; margin-top:6px; flex:1}
+.card-foot{display:flex; gap:8px; align-items:center}
+
+.btn{padding:8px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:800; background:var(--accent); color:#fff; text-decoration:none}
+.btn.secondary{background:#eef2ff; color:#0b1220; font-weight:800; border:1px solid rgba(12,18,30,0.04)}
+
+.cta{margin-top:26px; background:linear-gradient(90deg,#fdf2f8,#eef2ff); padding:18px; border-radius:12px; display:flex; gap:16px; align-items:center; justify-content:space-between}
+.muted{color:var(--muted)}
+
+.icon-small{width:18px;height:18px; margin-right:6px; vertical-align:middle}
+
+/* Modal */
+.modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(2,6,23,0.45); padding:20px}
+.modal[aria-hidden="false"]{display:flex}
+.modal-content{background:var(--card); padding:18px; border-radius:12px; width:100%; max-width:520px; position:relative}
+.modal-close{position:absolute; right:12px; top:8px; background:transparent; border:0; font-size:20px; cursor:pointer}
+form label{display:block; margin-top:8px; font-weight:700}
+form input[type="text"], form input[type="date"], form input[type="email"]{width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; margin-top:6px}
+.form-actions{display:flex; gap:8px; margin-top:12px; justify-content:flex-end}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)}}
+
+@media (max-width:760px){
+  .topbar{flex-direction:column; gap:10px}
+  .cta{flex-direction:column; align-items:flex-start}
+}
