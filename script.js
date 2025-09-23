@@ -153,11 +153,6 @@ function buildCards(){
         grid.insertAdjacentHTML('beforeend', cardHTML);
     });
 
-    // Re-attach event listeners for the new register buttons
-    document.querySelectorAll('.btn-register').forEach((btn, index) => {
-        btn.addEventListener('click', () => openModal(programs[index]));
-    });
-
   // after inserting, show animation
   requestAnimationFrame(()=> {
     document.querySelectorAll('.card').forEach((c, i)=> {
@@ -170,18 +165,12 @@ function buildCards(){
 const tabBtns = () => Array.from(document.querySelectorAll('.tab-btn'));
 function activateTab(tabName, btnEl){
   tabBtns().forEach(b => b.classList.toggle('active', b===btnEl));
-  const cards = Array.from(document.querySelectorAll('.card'));
-  cards.forEach(c=>{
-    if(tabName==='all') {
-      c.style.display='flex';
-      c.classList.add('show');
-    } else {
-      if(c.classList.contains(tabName)) {
-        c.style.display='flex'; c.classList.add('show');
-      } else {
-        c.classList.remove('show'); c.style.display='none';
-      }
-    }
+  document.querySelectorAll('.card').forEach(card => {
+    const isVisible = tabName === 'all' || card.classList.contains(tabName);
+    // Use a class to hide/show for better performance and cleaner code
+    card.classList.toggle('card-hidden', !isVisible);
+    // Re-trigger animation for newly shown items
+    if (isVisible) card.classList.add('show');
   });
 }
 
@@ -300,6 +289,20 @@ langToggleBtn.addEventListener('click', ()=> {
 
 // Tab events attach after DOM ready
 document.addEventListener('DOMContentLoaded', ()=>{
+  const grid = document.getElementById('grid');
+
+  // Event Delegation for Register buttons
+  // This is more efficient than adding a listener to every button.
+  grid.addEventListener('click', (e) => {
+    const registerButton = e.target.closest('.btn-register');
+    if (registerButton) {
+      const card = registerButton.closest('.card');
+      const programId = parseInt(card.dataset.programId, 10);
+      const program = programs.find(p => p.id === programId);
+      if (program) openModal(program);
+    }
+  });
+
   buildCards();
   updateText();
   // attach tab events
