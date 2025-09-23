@@ -45,19 +45,71 @@ const programs = [
 const i18n = {
   id: {
     title: "Program Persiapan IELTS & WHV",
-    subtitle: "Lengkap — Online / Offline / Hybrid. Pilih tab kategori untuk melihat detail program dan harga.",
+    subtitle: "Lengkap — Online / Offline / Hybrid. Raih skormu dengan bimbingan terbaik.",
     tab_all: "Semua", tab_whv:"WHV", tab_akademis:"Akademis", tab_fasttrack:"Fast-Track",
-    tab_intensif:"Intensif", tab_simulation:"Simulation Test", tab_online:"Online", tab_offline:"Offline",
-    cta_ready:"Siap daftar / butuh info lebih lanjut?", cta_contact:"Hubungi CS kami untuk jadwal & paket",
-    form_title:"Form Pendaftaran", form_name:"Nama", form_program:"Program", form_date:"Tanggal pilihan", form_contact:"Kontak (Email atau WA)"
+    tab_intensif:"Intensif", tab_simulation:"Simulation Test", tab_online:"Online",
+    form_title:"Form Pendaftaran", form_name:"Nama", form_program:"Program", form_date:"Tanggal pilihan", form_contact:"Kontak (Email atau WA)",
+    btn_register: "Daftar",
+    btn_details: "Detail",
+    form_intro: "Halo, saya ingin mendaftar program",
+    form_subject: "Pendaftaran Program IELTS",
+    form_alert_incomplete: "Lengkapi semua field.",
+    page_title_id: "Program Persiapan IELTS & WHV — Warung GPT4",
+    nav_programs: "Program",
+    nav_testimonials: "Testimoni",
+    nav_contact: "Kontak",
+    hero_cta: "Lihat Program",
+    advantages_title: "Keunggulan Kami",
+    advantage1_title: "Tutor Berpengalaman",
+    advantage1_desc: "Belajar langsung dari para ahli di bidangnya.",
+    advantage2_title: "Kurikulum Terstruktur",
+    advantage2_desc: "Materi disusun sistematis untuk hasil maksimal.",
+    advantage3_title: "Kelas Fleksibel",
+    advantage3_desc: "Pilihan kelas online, offline, dan hybrid.",
+    programs_title: "Program Unggulan",
+    testimonials_title: "Apa Kata Mereka?",
+    testimonial1_text: "\"Materinya sangat membantu dan tutornya sabar banget. Skor IELTS saya naik signifikan!\"",
+    testimonial1_program: "Program Akademis Intensif",
+    testimonial2_text: "\"Kelas WHV-nya to the point, sangat berguna untuk persiapan dokumen dan wawancara.\"",
+    testimonial2_program: "Program WHV Fast-Track",
+    footer_about_title: "Tentang Kami",
+    footer_about_text: "Kami adalah lembaga persiapan tes bahasa Inggris yang fokus membantu Anda mencapai target skor IELTS dan persiapan WHV.",
+    footer_contact_title: "Hubungi Kami",
+    footer_social_title: "Ikuti Kami"
   },
   en: {
     title: "IELTS & WHV Preparation Programs",
-    subtitle: "Complete — Online / Offline / Hybrid. Choose a tab to view program details and prices.",
+    subtitle: "Complete — Online / Offline / Hybrid. Achieve your score with the best guidance.",
     tab_all:"All", tab_whv:"WHV", tab_akademis:"Academic", tab_fasttrack:"Fast-Track",
-    tab_intensif:"Intensive", tab_simulation:"Simulation Test", tab_online:"Online", tab_offline:"Offline",
-    cta_ready:"Ready to register / need more info?", cta_contact:"Contact our CS for schedule & packages",
-    form_title:"Registration Form", form_name:"Full name", form_program:"Program", form_date:"Preferred date", form_contact:"Contact (Email or WA)"
+    tab_intensif:"Intensive", tab_simulation:"Simulation Test", tab_online:"Online",
+    form_title:"Registration Form", form_name:"Full name", form_program:"Program", form_date:"Preferred date", form_contact:"Contact (Email or WA)",
+    btn_register: "Register",
+    btn_details: "Details",
+    form_intro: "Hello, I want to register for the program",
+    form_subject: "Program Registration — IELTS",
+    form_alert_incomplete: "Please complete all fields.",
+    page_title_en: "IELTS & WHV Preparation Programs — Warung GPT4",
+    nav_programs: "Programs",
+    nav_testimonials: "Testimonials",
+    nav_contact: "Contact",
+    hero_cta: "View Programs",
+    advantages_title: "Our Advantages",
+    advantage1_title: "Experienced Tutors",
+    advantage1_desc: "Learn directly from experts in their fields.",
+    advantage2_title: "Structured Curriculum",
+    advantage2_desc: "Systematically arranged material for maximum results.",
+    advantage3_title: "Flexible Classes",
+    advantage3_desc: "Online, offline, and hybrid class options.",
+    programs_title: "Featured Programs",
+    testimonials_title: "What They Say",
+    testimonial1_text: "\"The material was very helpful and the tutors were very patient. My IELTS score increased significantly!\"",
+    testimonial1_program: "Intensive Academic Program",
+    testimonial2_text: "\"The WHV class was to the point, very useful for document and interview preparation.\"",
+    testimonial2_program: "WHV Fast-Track Program",
+    footer_about_title: "About Us",
+    footer_about_text: "We are an English test preparation institution focused on helping you achieve your IELTS score targets and WHV preparation.",
+    footer_contact_title: "Contact Us",
+    footer_social_title: "Follow Us"
   }
 };
 
@@ -65,66 +117,47 @@ let currentLang = 'id';
 
 // Build cards into DOM
 function buildCards(){
-  const grid = document.getElementById('grid');
-  grid.innerHTML = '';
-  programs.forEach(p=>{
-    const article = document.createElement('article');
-    article.className = 'card ' + p.category.join(' ') + ' all';
-    // head
-    const head = document.createElement('div'); head.className = 'card-head';
-    const icon = document.createElement('div'); icon.className = 'icon';
-    // pick icon file based on category mapping (simple heuristic)
-    const img = document.createElement('img'); img.alt=''; img.className='svg-icon';
-    img.style.width='28px'; img.style.height='28px';
-    if(p.category.includes('whv')) img.src='icons/whv.svg';
-    else if(p.category.includes('akademis')) img.src='icons/academic.svg';
-    else if(p.category.includes('fasttrack')) img.src='icons/fasttrack.svg';
-    else if(p.category.includes('intensif')) img.src='icons/intensive.svg';
-    else if(p.category.includes('simulation')) img.src='icons/simulation.svg';
-    else if(p.category.includes('online')) img.src='icons/online.svg';
-    else img.src='icons/offline.svg';
-    icon.appendChild(img);
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
 
-    const txt = document.createElement('div');
-    const title = document.createElement('div'); title.className='title';
-    title.textContent = currentLang === 'id' ? p.title_id : p.title_en;
-    const subtitle = document.createElement('div'); subtitle.className='subtitle';
-    subtitle.textContent = currentLang === 'id' ? p.subtitle_id : p.subtitle_en;
-    txt.appendChild(title); txt.appendChild(subtitle);
+    const getIcon = (p) => {
+        if(p.category.includes('whv')) return 'icons/whv.svg';
+        if(p.category.includes('akademis')) return 'icons/academic.svg';
+        if(p.category.includes('fasttrack')) return 'icons/fasttrack.svg';
+        if(p.category.includes('intensif')) return 'icons/intensive.svg';
+        if(p.category.includes('simulation')) return 'icons/simulation.svg';
+        if(p.category.includes('online')) return 'icons/online.svg';
+        return 'icons/offline.svg';
+    };
 
-    const price = document.createElement('div'); price.className='price';
-    price.innerHTML = '<i class="fa-solid fa-money-bill-wave"></i> ' + p.price;
-
-    head.appendChild(icon); head.appendChild(txt); head.appendChild(price);
-    article.appendChild(head);
-
-    const meta = document.createElement('div'); meta.className='meta';
-    p.tags.forEach(t=>{
-      const tag = document.createElement('div'); tag.className='tag ' + t;
-      tag.innerHTML = (t==='offline'?'<i class=\"fa-solid fa-school\"></i> ':'') + (t==='online'?'<i class=\"fa-solid fa-laptop\"></i> ':'') + (t==='hybrid'?'<i class=\"fa-solid fa-arrows-spin\"></i> ':'') + (currentLang==='id'? (t==='offline'?'Offline': t==='online'?'Online':'Hybrid') : (t==='offline'?'Offline': t==='online'?'Online':'Hybrid'));
-      meta.appendChild(tag);
+    programs.forEach(p => {
+        const cardHTML = `
+            <article class="card ${p.category.join(' ')} all" data-program-id="${p.id}">
+                <div class="card-head">
+                    <div class="icon"><img src="${getIcon(p)}" alt=""></div>
+                    <div>
+                        <div class="title" data-translatable="title">${currentLang === 'id' ? p.title_id : p.title_en}</div>
+                        <div class="subtitle" data-translatable="subtitle">${currentLang === 'id' ? p.subtitle_id : p.subtitle_en}</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="price">${p.price}</div>
+                    <div class="desc" data-translatable="desc">${currentLang === 'id' ? p.subtitle_id : p.subtitle_en}</div>
+                </div>
+                <div class="card-foot">
+                    <button class="btn btn-secondary" data-translatable="btn_details">${i18n[currentLang].btn_details}</button>
+                    <button class="btn btn-primary btn-register">${i18n[currentLang].btn_register}</button>
+                </div>
+            </article>
+        `;
+        grid.insertAdjacentHTML('beforeend', cardHTML);
     });
-    // If hybrid and also mention private fee
-    if(p.price && p.price.includes('+IDR')) {
-      const h = document.createElement('div'); h.className='tag hybrid';
-      h.textContent = p.price;
-      meta.appendChild(h);
-    }
-    article.appendChild(meta);
 
-    const desc = document.createElement('div'); desc.className='desc';
-    desc.textContent = currentLang === 'id' ? p.subtitle_id : p.subtitle_en;
-    article.appendChild(desc);
+    // Re-attach event listeners for the new register buttons
+    document.querySelectorAll('.btn-register').forEach((btn, index) => {
+        btn.addEventListener('click', () => openModal(programs[index]));
+    });
 
-    const foot = document.createElement('div'); foot.className='card-foot';
-    const btn = document.createElement('button'); btn.className='btn'; btn.textContent = currentLang==='id'?'Daftar':'Register';
-    btn.addEventListener('click', ()=> openModal(p));
-    const det = document.createElement('button'); det.className='btn secondary'; det.textContent = currentLang==='id'?'Detail':'Details';
-    foot.appendChild(btn); foot.appendChild(det);
-    article.appendChild(foot);
-
-    grid.appendChild(article);
-  });
   // after inserting, show animation
   requestAnimationFrame(()=> {
     document.querySelectorAll('.card').forEach((c, i)=> {
@@ -174,15 +207,34 @@ modalClose.addEventListener('click', ()=> modal.setAttribute('aria-hidden','true
 modal.addEventListener('click', (e)=> { if(e.target===modal) modal.setAttribute('aria-hidden','true'); });
 
 // Form: WhatsApp submit
-form.addEventListener('submit', (e)=> {
-  e.preventDefault();
+// --- Refactored Form Logic ---
+function getFormData() {
   const name = fieldName.value.trim();
   const program = fieldProgram.value.trim();
   const date = fieldDate.value;
   const contact = fieldContact.value.trim();
-  if(!name || !program || !date || !contact) { alert(currentLang==='id'?'Lengkapi semua field.':'Please complete all fields.'); return; }
-  // create message
-  const msg = `${currentLang==='id'?'Halo, saya ingin mendaftar program':'Hello, I want to register for the program'}%0AName: ${encodeURIComponent(name)}%0AProgram: ${encodeURIComponent(program)}%0APreferred date: ${encodeURIComponent(date)}%0AContact: ${encodeURIComponent(contact)}`;
+  const isValid = name && program && date && contact;
+  return { name, program, date, contact, isValid };
+}
+
+function createMessageBody({ name, program, date, contact }) {
+  const intro = i18n[currentLang].form_intro;
+  return `${intro}%0A` +
+         `Name: ${encodeURIComponent(name)}%0A` +
+         `Program: ${encodeURIComponent(program)}%0A` +
+         `Preferred date: ${encodeURIComponent(date)}%0A` +
+         `Contact: ${encodeURIComponent(contact)}`;
+}
+
+// Form: WhatsApp submit
+form.addEventListener('submit', (e)=> {
+  e.preventDefault();
+  const formData = getFormData();
+  if (!formData.isValid) {
+    alert(i18n[currentLang].form_alert_incomplete);
+    return;
+  }
+  const msg = createMessageBody(formData);
   // WhatsApp API link (number without +)
   const wa = `https://wa.me/6281775123999?text=${msg}`;
   window.open(wa, '_blank');
@@ -190,25 +242,19 @@ form.addEventListener('submit', (e)=> {
 
 // Email button
 submitEmail.addEventListener('click', ()=> {
-  const name = fieldName.value.trim();
-  const program = fieldProgram.value.trim();
-  const date = fieldDate.value;
-  const contact = fieldContact.value.trim();
-  if(!name || !program || !date || !contact) { alert(currentLang==='id'?'Lengkapi semua field.':'Please complete all fields.'); return; }
-  const subject = currentLang==='id' ? 'Pendaftaran Program IELTS' : 'Program Registration — IELTS';
-  const body = `${currentLang==='id'?'Halo, saya ingin mendaftar program':'Hello, I want to register for the program'}%0AName: ${encodeURIComponent(name)}%0AProgram: ${encodeURIComponent(program)}%0APreferred date: ${encodeURIComponent(date)}%0AContact: ${encodeURIComponent(contact)}`;
+  const formData = getFormData();
+  if (!formData.isValid) {
+    alert(i18n[currentLang].form_alert_incomplete);
+    return;
+  }
+  const subject = i18n[currentLang].form_subject;
+  const body = createMessageBody(formData);
   const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
   window.location.href = mailto;
 });
 
 // Language toggle
 const langToggleBtn = document.getElementById('langToggle');
-langToggleBtn.addEventListener('click', ()=> {
-  currentLang = currentLang === 'id' ? 'en' : 'id';
-  updateText();
-  buildCards();
-  langToggleBtn.textContent = currentLang === 'id' ? 'EN' : 'ID';
-});
 
 function updateText(){
   Object.keys(i18n[currentLang]).forEach(key=>{
@@ -216,7 +262,41 @@ function updateText(){
       el.textContent = i18n[currentLang][key];
     });
   });
+
+  // Update page title
+  const pageTitleKey = `page_title_${currentLang}`;
+  document.title = i18n[currentLang][pageTitleKey] || "IELTS & WHV Programs";
+
+  // Update dynamic card text
+  document.querySelectorAll('.card[data-program-id]').forEach(card => {
+    const programId = parseInt(card.dataset.programId, 10);
+    const program = programs.find(p => p.id === programId);
+    if (!program) return;
+
+    const langKey = currentLang;
+    card.querySelector('[data-translatable="title"]').textContent = program[`title_${langKey}`];
+    card.querySelector('[data-translatable="subtitle"]').textContent = program[`subtitle_${langKey}`];
+    card.querySelector('[data-translatable="desc"]').textContent = program[`subtitle_${langKey}`];
+    card.querySelector('[data-translatable="btn_register"]').textContent = i18n[langKey].btn_register;
+    card.querySelector('[data-translatable="btn_details"]').textContent = i18n[langKey].btn_details;
+  });
+
+  // Update form program title if modal is open
+  if (modal.getAttribute('aria-hidden') === 'false' && fieldProgram.value) {
+      const programTitleEn = fieldProgram.value;
+      const program = programs.find(p => p.title_en === programTitleEn || p.title_id === programTitleEn);
+      if(program) {
+          fieldProgram.value = currentLang === 'id' ? program.title_id : program.title_en;
+      }
+  }
 }
+
+langToggleBtn.addEventListener('click', ()=> {
+  currentLang = currentLang === 'id' ? 'en' : 'id';
+  updateText();
+  // buildCards(); // No longer needed to rebuild everything
+  langToggleBtn.textContent = currentLang === 'id' ? 'EN' : 'ID';
+});
 
 // Tab events attach after DOM ready
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -229,6 +309,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
       // remove show for all
       document.querySelectorAll('.card').forEach(c=> c.classList.remove('show'));
       setTimeout(()=> activateTab(tab, btn), 80);
+    });
+  });
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('.nav-link, .btn-hero').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
     });
   });
 });
