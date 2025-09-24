@@ -1,45 +1,4 @@
 /* script.js - tabs, cards, modal, bilingual toggle, form submit (WA + mailto) */
-const defaultPrograms = [
-  // WHV Offline
-  { id:1, title_id:"Writing Task 1 — General Training (Fast-Track)", title_en:"Writing Task 1 — General Training (Fast-Track)", category:["whv","offline","fasttrack"], subtitle_id:"Persiapan surat/penulisan cepat untuk WHV", subtitle_en:"Letter/task writing for WHV general training", price:"IDR 500,000", tags:["offline"] },
-  { id:2, title_id:"Writing Task 2 (Fast-Track)", title_en:"Writing Task 2 (Fast-Track)", category:["whv","offline","fasttrack"], subtitle_id:"Latihan esai terfokus untuk kebutuhan General Training", subtitle_en:"Focused essay practice for General Training", price:"IDR 450,000", tags:["offline"] },
-  { id:3, title_id:"Reading & Listening (Fast-Track)", title_en:"Reading & Listening (Fast-Track)", category:["whv","offline","fasttrack"], subtitle_id:"Meningkatkan skor pemahaman teks & audio", subtitle_en:"Improve reading & listening comprehension scores", price:"IDR 400,000", tags:["offline"] },
-  { id:4, title_id:"Practice Speaking", title_en:"Practice Speaking", category:["whv","offline"], subtitle_id:"Sesi praktik berbicara intensif", subtitle_en:"Intensive speaking practice sessions", price:"IDR 200,000", tags:["offline"] },
-  { id:5, title_id:"IELTS Basic", title_en:"IELTS Basic", category:["whv","offline"], subtitle_id:"Program dasar untuk pemula", subtitle_en:"Basic IELTS program for beginners", price:"IDR 500,000", tags:["offline"] },
-  { id:6, title_id:"Private Class (Online/Offline)", title_en:"Private Class (Online/Offline)", category:["whv","hybrid"], subtitle_id:"Sesi privat sesuai kebutuhan (koreksi + fokus topik)", subtitle_en:"1:1 sessions tailored to needs", price:"+IDR 100,000 / jam", tags:["hybrid"] },
-
-  // Akademis
-  { id:11, title_id:"Writing Task 1 — Academic (Fast-Track)", title_en:"Writing Task 1 — Academic (Fast-Track)", category:["akademis","fasttrack","offline"], subtitle_id:"Grafik, tabel, diagram — fokus analisis data", subtitle_en:"Graphs, tables, diagrams — data analysis focus", price:"IDR 400,000", tags:["offline","online"] },
-  { id:12, title_id:"Writing Task 2 — Academic (Intensif)", title_en:"Writing Task 2 — Academic (Intensive)", category:["akademis","intensif","offline"], subtitle_id:"Pendalaman esai akademik & argumen", subtitle_en:"Deep academic essay & argument training", price:"IDR 700,000", tags:["offline"] },
-  { id:13, title_id:"Reading & Listening (Intensif)", title_en:"Reading & Listening (Intensive)", category:["akademis","intensif","offline"], subtitle_id:"Pendalaman teknik soal-soal akademik", subtitle_en:"Deep technique training for academic questions", price:"IDR 650,000", tags:["offline"] },
-  { id:14, title_id:"Writing Task 1 Academic (Intensif)", title_en:"Writing Task 1 Academic (Intensive)", category:["akademis","intensif","offline"], subtitle_id:"Pendalaman struktur & vocabulary akademik", subtitle_en:"Intensive structure & academic vocabulary", price:"IDR 650,000", tags:["offline"] },
-  { id:15, title_id:"Reading & Listening (Fast-Track) — Academic", title_en:"Reading & Listening (Fast-Track) — Academic", category:["akademis","fasttrack","offline"], subtitle_id:"Kelas cepat untuk bagian bacaan & audio", subtitle_en:"Quick class for reading & audio sections", price:"IDR 400,000", tags:["offline"] },
-
-  // Online programs
-  { id:21, title_id:"Writing Task 1 General Training (Online)", title_en:"Writing Task 1 General Training (Online)", category:["online","fasttrack"], subtitle_id:"Versi online — Fast-Track", subtitle_en:"Online version — Fast-Track", price:"IDR 600,000", tags:["online"] },
-  { id:22, title_id:"Writing Task 2 — Fast-Track (Online)", title_en:"Writing Task 2 — Fast-Track (Online)", category:["online","fasttrack"], subtitle_id:"Versi online, kursus singkat", subtitle_en:"Online version, short course", price:"IDR 675,000", tags:["online"] },
-  { id:23, title_id:"Writing Task 1 Academic (Intensif — Online)", title_en:"Writing Task 1 Academic (Intensive — Online)", category:["online","intensif"], subtitle_id:"Program intensif versi online", subtitle_en:"Intensive online program", price:"IDR 1,000,001", tags:["online"] },
-  { id:24, title_id:"Writing Task 2 Academic (Intensif — Online)", title_en:"Writing Task 2 Academic (Intensive — Online)", category:["online","intensif"], subtitle_id:"Pendalaman esai akademik secara online", subtitle_en:"Deep essay training online", price:"IDR 1,000,002", tags:["online"] },
-  { id:25, title_id:"Reading & Listening (Intensif — Online)", title_en:"Reading & Listening (Intensive — Online)", category:["online","intensif"], subtitle_id:"Versi online: kedalaman latihan & simulasi", subtitle_en:"Online depth practice & simulation", price:"IDR 1,000,003", tags:["online"] },
-  { id:26, title_id:"Practice Speaking (Online)", title_en:"Practice Speaking (Online)", category:["online"], subtitle_id:"Sesi online — fokus speaking & feedback", subtitle_en:"Online speaking sessions with feedback", price:"IDR 200,000", tags:["online"] },
-  { id:27, title_id:"IELTS Basic (Online)", title_en:"IELTS Basic (Online)", category:["online"], subtitle_id:"Dasar-dasar IELTS dalam format online", subtitle_en:"IELTS basics in online format", price:"IDR 600,000", tags:["online"] },
-
-  // Fast-Track combined
-  { id:31, title_id:"Fast-Track Writing Task 1 (Academic)", title_en:"Fast-Track Writing Task 1 (Academic)", category:["fasttrack"], subtitle_id:"Offline & Online opsi", subtitle_en:"Offline & Online options", price:"Offline: IDR 400,000 • Online: IDR 600,000", tags:["offline","online"] },
-  { id:32, title_id:"Fast-Track Writing Task 2 (Academic)", title_en:"Fast-Track Writing Task 2 (Academic)", category:["fasttrack"], subtitle_id:"Offline: IDR 450K / Online: IDR 675K", subtitle_en:"Offline: IDR 450K / Online: IDR 675K", price:"Offline: 450K • Online: 675K", tags:["offline","online"] },
-  { id:33, title_id:"Fast-Track Reading & Listening", title_en:"Fast-Track Reading & Listening", category:["fasttrack"], subtitle_id:"Offline: IDR 400K / Online: IDR 600K", subtitle_en:"Offline: IDR 400K / Online: IDR 600K", price:"Offline: 400K • Online: 600K", tags:["offline","online"] },
-
-  // Intensif offline
-  { id:41, title_id:"Writing Task 2 — Intensif (Offline)", title_en:"Writing Task 2 — Intensive (Offline)", category:["intensif","offline"], subtitle_id:"Pendalaman esai akademik — Offline IDR 700,000", subtitle_en:"Deep academic essay training — Offline IDR 700,000", price:"IDR 700,000", tags:["offline"] },
-  { id:42, title_id:"Writing Task 1 — Intensif (Offline)", title_en:"Writing Task 1 — Intensive (Offline)", category:["intensif","offline"], subtitle_id:"IDR 650,000 — pelatihan mendalam", subtitle_en:"IDR 650,000 — deep training", price:"IDR 650,000", tags:["offline"] },
-  { id:43, title_id:"Reading & Listening — Intensif (Offline)", title_en:"Reading & Listening — Intensive (Offline)", category:["intensif","offline"], subtitle_id:"IDR 650,000", subtitle_en:"IDR 650,000", price:"IDR 650,000", tags:["offline"] },
-
-  // Simulation tests
-  { id:51, title_id:"Academic IELTS Simulation (Online)", title_en:"Academic IELTS Simulation (Online)", category:["simulation","online"], subtitle_id:"Kuota simulasi online", subtitle_en:"Online simulation quota", price:"IDR 150,000", tags:["online"] },
-  { id:52, title_id:"Academic IELTS Simulation (Offline)", title_en:"Academic IELTS Simulation (Offline)", category:["simulation","offline"], subtitle_id:"Kuota terbatas — Tatap muka", subtitle_en:"Limited quota — In-person", price:"IDR 150,000", tags:["offline"] },
-  { id:53, title_id:"General Training IELTS Simulation (Offline)", title_en:"General Training IELTS Simulation (Offline)", category:["simulation","offline"], subtitle_id:"Kuota — tatap muka", subtitle_en:"Quota — in-person", price:"IDR 150,000", tags:["offline"] },
-  { id:54, title_id:"General Training IELTS Simulation (Online)", title_en:"General Training IELTS Simulation (Online)", category:["simulation","online"], subtitle_id:"Versi online — fleksibel", subtitle_en:"Online version — flexible", price:"IDR 150,000", tags:["online"] }
-];
 
 // translations object
 const i18n = {
@@ -121,21 +80,10 @@ function buildCards(){
     const grid = document.getElementById('grid');
     grid.innerHTML = '';
 
-    const getIcon = (p) => {
-        if(p.category.includes('whv')) return 'icons/whv.svg';
-        if(p.category.includes('akademis')) return 'icons/academic.svg';
-        if(p.category.includes('fasttrack')) return 'icons/fasttrack.svg';
-        if(p.category.includes('intensif')) return 'icons/intensive.svg';
-        if(p.category.includes('simulation')) return 'icons/simulation.svg';
-        if(p.category.includes('online')) return 'icons/online.svg';
-        return 'icons/offline.svg';
-    };
-
     programs.forEach((p, index) => {
         const cardHTML = `
             <article class="card ${p.category.join(' ')} all" data-program-id="${p.id}">
                 <div class="card-head">
-                    <div class="icon"><img src="${getIcon(p)}" alt=""></div>
                     <div>
                         <div class="title" data-translatable="title">${currentLang === 'id' ? p.title_id : p.title_en}</div>
                         <div class="subtitle" data-translatable="subtitle">${currentLang === 'id' ? p.subtitle_id : p.subtitle_en}</div>
@@ -294,139 +242,22 @@ langToggleBtn.addEventListener('click', ()=> {
 
 // --- ADMIN PANEL LOGIC ---
 
-function loadPrograms() {
-    const storedPrograms = localStorage.getItem('warungGptPrograms');
-    if (storedPrograms) {
-        programs = JSON.parse(storedPrograms);
-    } else {
-        // First time load, use default and save to localStorage
-        programs = defaultPrograms;
-        savePrograms();
+async function loadPrograms() {
+    try {
+        const response = await fetch('programs.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        programs = await response.json();
+    } catch (error) {
+        console.error("Could not load programs:", error);
+        // Fallback to an empty array if the file is not found or invalid
+        programs = [];
     }
 }
 
-function savePrograms() {
-    localStorage.setItem('warungGptPrograms', JSON.stringify(programs));
-}
-
-function refreshUI() {
-    buildCards();
-    updateText();
-    renderAdminList();
-}
-
-function renderAdminList() {
-    const listContainer = document.getElementById('admin-program-list');
-    listContainer.innerHTML = '';
-    programs.forEach(p => {
-        const itemHTML = `
-            <div class="admin-program-item" data-program-id="${p.id}">
-                <p>${p.title_id}</p>
-                <div class="controls">
-                    <button class="btn btn-secondary edit-btn">Edit</button>
-                    <button class="btn delete-btn">Hapus</button>
-                </div>
-            </div>
-        `;
-        listContainer.insertAdjacentHTML('beforeend', itemHTML);
-    });
-}
-
-function setupAdminPanel() {
-    const adminModal = document.getElementById('admin-modal');
-    const adminLink = document.getElementById('admin-link');
-    const adminCloseBtn = document.getElementById('admin-modal-close');
-    const adminList = document.getElementById('admin-program-list');
-    const addNewBtn = document.getElementById('add-new-program-btn');
-    const adminForm = document.getElementById('admin-form');
-    const adminFormTitle = document.getElementById('admin-form-title');
-    const cancelBtn = document.getElementById('admin-cancel-btn');
-
-    // Form fields
-    const fieldId = document.getElementById('admin-program-id');
-    const fieldTitleId = document.getElementById('admin-title-id');
-    const fieldTitleEn = document.getElementById('admin-title-en');
-    const fieldSubtitleId = document.getElementById('admin-subtitle-id');
-    const fieldSubtitleEn = document.getElementById('admin-subtitle-en');
-    const fieldPrice = document.getElementById('admin-price');
-    const fieldCategories = document.getElementById('admin-categories');
-
-    const showForm = (program = null) => {
-        adminForm.classList.remove('hidden');
-        if (program) { // Editing
-            adminFormTitle.textContent = 'Edit Program';
-            fieldId.value = program.id;
-            fieldTitleId.value = program.title_id;
-            fieldTitleEn.value = program.title_en;
-            fieldSubtitleId.value = program.subtitle_id;
-            fieldSubtitleEn.value = program.subtitle_en;
-            fieldPrice.value = program.price;
-            fieldCategories.value = program.category.join(',');
-        } else { // Adding new
-            adminFormTitle.textContent = 'Tambah Program Baru';
-            adminForm.reset();
-            fieldId.value = '';
-        }
-    };
-
-    const hideForm = () => adminForm.classList.add('hidden');
-
-    adminLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        renderAdminList();
-        adminModal.setAttribute('aria-hidden', 'false');
-    });
-
-    adminCloseBtn.addEventListener('click', () => adminModal.setAttribute('aria-hidden', 'true'));
-    addNewBtn.addEventListener('click', () => showForm());
-    cancelBtn.addEventListener('click', hideForm);
-
-    adminList.addEventListener('click', (e) => {
-        const target = e.target;
-        const programItem = target.closest('.admin-program-item');
-        if (!programItem) return;
-        const programId = parseInt(programItem.dataset.programId, 10);
-
-        if (target.classList.contains('edit-btn')) {
-            const programToEdit = programs.find(p => p.id === programId);
-            showForm(programToEdit);
-        }
-
-        if (target.classList.contains('delete-btn')) {
-            if (confirm(`Yakin ingin menghapus program ini?`)) {
-                programs = programs.filter(p => p.id !== programId);
-                savePrograms();
-                refreshUI();
-            }
-        }
-    });
-
-    adminForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const id = parseInt(fieldId.value, 10);
-        const newProgramData = {
-            title_id: fieldTitleId.value, title_en: fieldTitleEn.value,
-            subtitle_id: fieldSubtitleId.value, subtitle_en: fieldSubtitleEn.value,
-            price: fieldPrice.value,
-            category: fieldCategories.value.split(',').map(c => c.trim()),
-            tags: fieldCategories.value.split(',').map(c => c.trim()).filter(c => ['online', 'offline', 'hybrid'].includes(c))
-        };
-
-        if (id) { // Update existing
-            const index = programs.findIndex(p => p.id === id);
-            programs[index] = { ...programs[index], ...newProgramData };
-        } else { // Add new
-            newProgramData.id = Date.now(); // Simple unique ID
-            programs.push(newProgramData);
-        }
-        savePrograms();
-        refreshUI();
-        hideForm();
-    });
-}
-
 // Tab events attach after DOM ready
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', async ()=>{
   const grid = document.getElementById('grid');
 
   // Event Delegation for Register buttons
@@ -441,10 +272,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   });
 
-  loadPrograms();
+  // Load data first, then build the UI
+  await loadPrograms();
   buildCards();
   updateText();
-  setupAdminPanel();
+  // Admin panel is no longer needed for a static site
+  document.getElementById('admin-link').style.display = 'none';
 
   // attach tab events
   tabBtns().forEach(btn=>{
