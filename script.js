@@ -242,18 +242,141 @@ langToggleBtn.addEventListener('click', ()=> {
 
 // --- ADMIN PANEL LOGIC ---
 
+let defaultPrograms = [];
+
 async function loadPrograms() {
     try {
         const response = await fetch('programs.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        programs = await response.json();
+        defaultPrograms = await response.json();
+
+        const storedPrograms = localStorage.getItem('warungGptPrograms');
+        if (storedPrograms) {
+            programs = JSON.parse(storedPrograms);
+        } else {
+            programs = defaultPrograms;
+            savePrograms();
+        }
     } catch (error) {
         console.error("Could not load programs:", error);
-        // Fallback to an empty array if the file is not found or invalid
         programs = [];
+        defaultPrograms = [];
     }
+}
+
+function savePrograms() {
+    localStorage.setItem('warungGptPrograms', JSON.stringify(programs));
+}
+
+function refreshUI() {
+    buildCards();
+    updateText();
+    if (document.getElementById('admin-modal').getAttribute('aria-hidden') === 'false') {
+        renderAdminList();
+    }
+}
+
+function renderAdminList() {
+    const listContainer = document.getElementById('admin-program-list');
+    listContainer.innerHTML = '';
+    programs.forEach(p => {
+        const itemHTML = `
+            <div class="admin-program-item" data-program-id="${p.id}">
+                <p>${p.title_id}</p>
+                <div class="controls">
+                    <button class="btn btn-secondary edit-btn">Edit</button>
+                    <button class="btn delete-btn">Hapus</button>
+                </div>
+            </div>
+        `;
+        listContainer.insertAdjacentHTML('beforeend', itemHTML);
+    });
+}
+
+function setupAdminPanel() {
+    const adminModal = document.getElementById('admin-modal');
+    const adminLink = document.getElementById('admin-link');
+    const adminCloseBtn = document.getElementById('admin-modal-close');
+    const adminList = document.getElementById('admin-program-list');
+    const addNewBtn = document.getElementById('add-new-program-btn');
+    const resetBtn = document.getElementById('reset-programs-btn');
+    const adminForm = document.getElementById('admin-form');
+    const exportBtn = document.getElementById('export-programs-btn');
+    const exportContainer = document.getElementById('export-output-container');
+    const exportOutput = document.getElementById('export-output');
+    const adminFormTitle = document.getElementById('admin-form-title');
+    const cancelBtn = document.getElementById('admin-cancel-btn');
+
+    const fieldId = document.getElementById('admin-program-id');
+    const fieldTitleId = document.getElementById('admin-title-id');
+    const fieldTitleEn = document.getElementById('admin-title-en');
+    const fieldSubtitleId = document.getElementById('admin-subtitle-id');
+    const fieldSubtitleEn = document.getElementById('admin-subtitle-en');
+    const fieldPrice = document.getElementById('admin-price');
+    const fieldCategories = document.getElementById('admin-categories');
+
+    const showForm = (program = null) => {
+        adminForm.classList.remove('hidden');
+        if (program) {
+            adminFormTitle.textContent = 'Edit Program';
+            fieldId.value = program.id;
+            fieldTitleId.value = program.title_id;
+            fieldTitleEn.value = program.title_en;
+            fieldSubtitleId.value = program.subtitle_id;
+            fieldSubtitleEn.value = program.subtitle_en;
+            fieldPrice.value = program.price;
+            fieldCategories.value = program.category.join(',');
+        } else {
+            adminFormTitle.textContent = 'Tambah Program Baru';
+            adminForm.reset();
+            fieldId.value = '';
+        }
+    };
+
+    const hideForm = () => {
+        adminForm.classList.add('hidden');
+        exportContainer.classList.add('hidden'); // Sembunyikan juga area export
+    };
+
+    adminLink.addEventListener('click', (e) => { e.preventDefault(); renderAdminList(); adminModal.setAttribute('aria-hidden', 'false'); });
+    adminCloseBtn.addEventListener('click', () => adminModal.setAttribute('aria-hidden', 'true'));
+    addNewBtn.addEventListener('click', () => { hideForm(); showForm(); });
+    cancelBtn.addEventListener('click', hideForm);
+
+    resetBtn.addEventListener('click', () => {
+        if (confirm('Yakin ingin mengembalikan semua program ke default? Perubahan lokal Anda akan hilang.')) {
+            programs = defaultPrograms;
+            savePrograms();
+            refreshUI();
+        }
+    });
+
+    exportBtn.addEventListener('click', () => {
+        adminForm.classList.add('hidden'); // Sembunyikan form jika terbuka
+        exportContainer.classList.remove('hidden');
+        // Tampilkan JSON yang sudah diformat rapi
+        exportOutput.value = JSON.stringify(programs, null, 2);
+        exportOutput.select(); // Langsung pilih semua teks agar mudah disalin
+    });
+
+    adminList.addEventListener('click', (e) => {
+        const programItem = e.target.closest('.admin-program-item');
+        if (!programItem) return;
+        const programId = parseInt(programItem.dataset.programId, 10);
+        if (e.target.classList.contains('edit-btn')) { showForm(programs.find(p => p.id === programId)); }
+        if (e.target.classList.contains('delete-btn')) { if (confirm('Yakin ingin menghapus program ini?')) { programs = programs.filter(p => p.id !== programId); savePrograms(); refreshUI(); } }
+    });
+
+    adminForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = parseInt(fieldId.value, 10);
+        const data = { title_id: fieldTitleId.value, title_en: fieldTitleEn.value, subtitle_id: fieldSubtitleId.value, subtitle_en: fieldSubtitleEn.value, price: fieldPrice.value, category: fieldCategories.value.split(',').map(c => c.trim()), tags: fieldCategories.value.split(',').map(c => c.trim()).filter(c => ['online', 'offline', 'hybrid'].includes(c)) };
+        if (id) { const index = programs.findIndex(p => p.id === id); programs[index] = { ...programs[index], ...data }; } 
+        else { data.id = Date.now(); programs.push(data); }
+        savePrograms(); refreshUI(); hideForm();
+    });
 }
 
 // Tab events attach after DOM ready
@@ -276,8 +399,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   await loadPrograms();
   buildCards();
   updateText();
-  // Admin panel is no longer needed for a static site
-  document.getElementById('admin-link').style.display = 'none';
+  setupAdminPanel();
 
   // attach tab events
   tabBtns().forEach(btn=>{

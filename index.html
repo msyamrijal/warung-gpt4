@@ -15,7 +15,6 @@
         <nav class="navbar">
             <div class="nav-container">
                 <a href="#" class="brand">
-                    <img src="icons/academic.svg" alt="Brand Logo" class="brand-icon">
                     <strong>Warung GPT4</strong>
                 </a>
                 <ul class="nav-menu">
@@ -43,17 +42,14 @@
             <h2 class="section-title" data-i18n="advantages_title">Keunggulan Kami</h2>
             <div class="advantages-grid">
                 <div class="advantage-item">
-                    <i class="fas fa-chalkboard-teacher fa-2x"></i>
                     <h3 data-i18n="advantage1_title">Tutor Berpengalaman</h3>
                     <p data-i18n="advantage1_desc">Belajar langsung dari para ahli di bidangnya.</p>
                 </div>
                 <div class="advantage-item">
-                    <i class="fas fa-book-open fa-2x"></i>
                     <h3 data-i18n="advantage2_title">Kurikulum Terstruktur</h3>
                     <p data-i18n="advantage2_desc">Materi disusun sistematis untuk hasil maksimal.</p>
                 </div>
                 <div class="advantage-item">
-                    <i class="fas fa-users fa-2x"></i>
                     <h3 data-i18n="advantage3_title">Kelas Fleksibel</h3>
                     <p data-i18n="advantage3_desc">Pilihan kelas online, offline, dan hybrid.</p>
                 </div>
@@ -111,9 +107,9 @@
                 </div>
                 <div class="footer-col">
                     <h4 data-i18n="footer_contact_title">Hubungi Kami</h4>
-                    <p><i class="fas fa-phone"></i> WA: +62 817-751-23999</p>
-                    <p><i class="fas fa-envelope"></i> Email: info@warung-gpt4.com</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Lokasi: Jakarta, Indonesia</p>
+                    <p>WA: +62 817-751-23999</p>
+                    <p>Email: info@warung-gpt4.com</p>
+                    <p>Lokasi: Jakarta, Indonesia</p>
                 </div>
                 <div class="footer-col">
                     <h4 data-i18n="footer_social_title">Ikuti Kami</h4>
@@ -125,7 +121,10 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Warung GPT4. All Rights Reserved. <a href="#" id="admin-link" class="admin-link">Admin</a></p>
+                <p>
+                    &copy; 2024 Warung GPT4. All Rights Reserved. 
+                    <a href="#" id="admin-link" class="admin-link">Admin</a>
+                </p>
             </div>
         </div>
     </footer>
@@ -154,6 +153,55 @@
           </div>
         </form>
       </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="admin-modal" class="modal" aria-hidden="true">
+        <div class="modal-content admin-panel" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+            <button class="modal-close" id="admin-modal-close" aria-label="Close">×</button>
+            <h3 id="adminModalTitle">Admin Panel - Kelola Program</h3>
+            
+            <div class="admin-actions">
+                <button id="add-new-program-btn" class="btn btn-primary">Tambah Program Baru</button>
+                <button id="reset-programs-btn" class="btn btn-secondary reset-btn">Reset ke Default</button>
+                <button id="export-programs-btn" class="btn btn-secondary export-btn">Export Data</button>
+            </div>
+
+            <div id="admin-program-list">
+                <!-- Daftar program untuk admin akan dimuat di sini oleh JS -->
+            </div>
+
+            <!-- Form untuk Add/Edit Program (awalnya tersembunyi) -->
+            <form id="admin-form" class="hidden">
+                <input type="hidden" id="admin-program-id">
+                <h4 id="admin-form-title">Tambah Program Baru</h4>
+                <label>Title (ID)</label>
+                <input type="text" id="admin-title-id" required>
+                <label>Title (EN)</label>
+                <input type="text" id="admin-title-en" required>
+                <label>Subtitle (ID)</label>
+                <input type="text" id="admin-subtitle-id" required>
+                <label>Subtitle (EN)</label>
+                <input type="text" id="admin-subtitle-en" required>
+                <label>Harga (contoh: IDR 500,000)</label>
+                <input type="text" id="admin-price" required>
+                <label>Kategori (pisahkan dengan koma, contoh: whv,offline,fasttrack)</label>
+                <input type="text" id="admin-categories" required>
+                <div class="form-actions">
+                    <button type="button" id="admin-cancel-btn" class="btn btn-secondary">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+
+            <!-- Area untuk Export (awalnya tersembunyi) -->
+            <div id="export-output-container" class="hidden">
+                <h4>Data Program (JSON)</h4>
+                <!-- Ganti NAMA_PENGGUNA/NAMA_REPO dengan milik Anda -->
+                <p>Salin teks di bawah ini dan tempel ke dalam file <a href="https://github.com/NAMA_PENGGUNA/NAMA_REPO/edit/main/programs.json" target="_blank" rel="noopener">programs.json</a> di GitHub untuk menyimpan perubahan secara permanen.</p>
+                <textarea id="export-output" readonly></textarea>
+            </div>
+
+        </div>
     </div>
 
     <script src="script.js"></script>

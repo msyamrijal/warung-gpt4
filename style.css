@@ -182,11 +182,6 @@ section {
   text-align: center;
 }
 
-.advantage-item i {
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-}
-
 .advantage-item h3 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
@@ -391,13 +386,6 @@ footer {
   margin-bottom: 0.5rem;
 }
 
-.footer-col i {
-  color: var(--secondary-color);
-  margin-right: 0.5rem;
-  width: 20px;
-  text-align: center;
-}
-
 .social-links a {
   color: #ccc;
   text-decoration: none;
@@ -574,6 +562,34 @@ footer {
     color: white;
 }
 
+.admin-actions .reset-btn {
+    background-color: #f39c12;
+    color: white;
+    border-color: #f39c12;
+}
+
+.admin-actions .export-btn {
+    background-color: #16a085;
+    color: white;
+    border-color: #16a085;
+}
+
+#export-output-container {
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+}
+
+#export-output-container h4 {
+    margin-bottom: 0.5rem;
+}
+
+#export-output-container p {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
 #admin-form {
     margin-top: 2rem;
     border-top: 1px solid #eee;
@@ -581,6 +597,14 @@ footer {
 }
 
 .hidden { display: none !important; }
+
+#export-output {
+    width: 100%;
+    height: 200px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    padding: 0.5rem;
+}
 
 /* 11. Responsive Design */
 @media (max-width: 768px) {
