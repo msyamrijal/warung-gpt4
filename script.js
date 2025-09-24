@@ -1,5 +1,5 @@
 /* script.js - tabs, cards, modal, bilingual toggle, form submit (WA + mailto) */
-const programs = [
+const defaultPrograms = [
   // WHV Offline
   { id:1, title_id:"Writing Task 1 — General Training (Fast-Track)", title_en:"Writing Task 1 — General Training (Fast-Track)", category:["whv","offline","fasttrack"], subtitle_id:"Persiapan surat/penulisan cepat untuk WHV", subtitle_en:"Letter/task writing for WHV general training", price:"IDR 500,000", tags:["offline"] },
   { id:2, title_id:"Writing Task 2 (Fast-Track)", title_en:"Writing Task 2 (Fast-Track)", category:["whv","offline","fasttrack"], subtitle_id:"Latihan esai terfokus untuk kebutuhan General Training", subtitle_en:"Focused essay practice for General Training", price:"IDR 450,000", tags:["offline"] },
@@ -114,6 +114,7 @@ const i18n = {
 };
 
 let currentLang = 'id';
+let programs = []; // This will hold our programs, loaded from localStorage
 
 // Build cards into DOM
 function buildCards(){
@@ -130,7 +131,7 @@ function buildCards(){
         return 'icons/offline.svg';
     };
 
-    programs.forEach(p => {
+    programs.forEach((p, index) => {
         const cardHTML = `
             <article class="card ${p.category.join(' ')} all" data-program-id="${p.id}">
                 <div class="card-head">
@@ -165,12 +166,16 @@ function buildCards(){
 const tabBtns = () => Array.from(document.querySelectorAll('.tab-btn'));
 function activateTab(tabName, btnEl){
   tabBtns().forEach(b => b.classList.toggle('active', b===btnEl));
+  
   document.querySelectorAll('.card').forEach(card => {
     const isVisible = tabName === 'all' || card.classList.contains(tabName);
-    // Use a class to hide/show for better performance and cleaner code
-    card.classList.toggle('card-hidden', !isVisible);
-    // Re-trigger animation for newly shown items
-    if (isVisible) card.classList.add('show');
+    
+    // First, handle visibility for animations
+    card.classList.toggle('show', isVisible);
+
+    // Then, use 'card-hidden' for layout collapsing after animation
+    // The timeout should match the CSS transition duration
+    setTimeout(() => card.classList.toggle('card-hidden', !isVisible), 300); // 300ms matches CSS transition
   });
 }
 
@@ -287,6 +292,139 @@ langToggleBtn.addEventListener('click', ()=> {
   langToggleBtn.textContent = currentLang === 'id' ? 'EN' : 'ID';
 });
 
+// --- ADMIN PANEL LOGIC ---
+
+function loadPrograms() {
+    const storedPrograms = localStorage.getItem('warungGptPrograms');
+    if (storedPrograms) {
+        programs = JSON.parse(storedPrograms);
+    } else {
+        // First time load, use default and save to localStorage
+        programs = defaultPrograms;
+        savePrograms();
+    }
+}
+
+function savePrograms() {
+    localStorage.setItem('warungGptPrograms', JSON.stringify(programs));
+}
+
+function refreshUI() {
+    buildCards();
+    updateText();
+    renderAdminList();
+}
+
+function renderAdminList() {
+    const listContainer = document.getElementById('admin-program-list');
+    listContainer.innerHTML = '';
+    programs.forEach(p => {
+        const itemHTML = `
+            <div class="admin-program-item" data-program-id="${p.id}">
+                <p>${p.title_id}</p>
+                <div class="controls">
+                    <button class="btn btn-secondary edit-btn">Edit</button>
+                    <button class="btn delete-btn">Hapus</button>
+                </div>
+            </div>
+        `;
+        listContainer.insertAdjacentHTML('beforeend', itemHTML);
+    });
+}
+
+function setupAdminPanel() {
+    const adminModal = document.getElementById('admin-modal');
+    const adminLink = document.getElementById('admin-link');
+    const adminCloseBtn = document.getElementById('admin-modal-close');
+    const adminList = document.getElementById('admin-program-list');
+    const addNewBtn = document.getElementById('add-new-program-btn');
+    const adminForm = document.getElementById('admin-form');
+    const adminFormTitle = document.getElementById('admin-form-title');
+    const cancelBtn = document.getElementById('admin-cancel-btn');
+
+    // Form fields
+    const fieldId = document.getElementById('admin-program-id');
+    const fieldTitleId = document.getElementById('admin-title-id');
+    const fieldTitleEn = document.getElementById('admin-title-en');
+    const fieldSubtitleId = document.getElementById('admin-subtitle-id');
+    const fieldSubtitleEn = document.getElementById('admin-subtitle-en');
+    const fieldPrice = document.getElementById('admin-price');
+    const fieldCategories = document.getElementById('admin-categories');
+
+    const showForm = (program = null) => {
+        adminForm.classList.remove('hidden');
+        if (program) { // Editing
+            adminFormTitle.textContent = 'Edit Program';
+            fieldId.value = program.id;
+            fieldTitleId.value = program.title_id;
+            fieldTitleEn.value = program.title_en;
+            fieldSubtitleId.value = program.subtitle_id;
+            fieldSubtitleEn.value = program.subtitle_en;
+            fieldPrice.value = program.price;
+            fieldCategories.value = program.category.join(',');
+        } else { // Adding new
+            adminFormTitle.textContent = 'Tambah Program Baru';
+            adminForm.reset();
+            fieldId.value = '';
+        }
+    };
+
+    const hideForm = () => adminForm.classList.add('hidden');
+
+    adminLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        renderAdminList();
+        adminModal.setAttribute('aria-hidden', 'false');
+    });
+
+    adminCloseBtn.addEventListener('click', () => adminModal.setAttribute('aria-hidden', 'true'));
+    addNewBtn.addEventListener('click', () => showForm());
+    cancelBtn.addEventListener('click', hideForm);
+
+    adminList.addEventListener('click', (e) => {
+        const target = e.target;
+        const programItem = target.closest('.admin-program-item');
+        if (!programItem) return;
+        const programId = parseInt(programItem.dataset.programId, 10);
+
+        if (target.classList.contains('edit-btn')) {
+            const programToEdit = programs.find(p => p.id === programId);
+            showForm(programToEdit);
+        }
+
+        if (target.classList.contains('delete-btn')) {
+            if (confirm(`Yakin ingin menghapus program ini?`)) {
+                programs = programs.filter(p => p.id !== programId);
+                savePrograms();
+                refreshUI();
+            }
+        }
+    });
+
+    adminForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = parseInt(fieldId.value, 10);
+        const newProgramData = {
+            title_id: fieldTitleId.value, title_en: fieldTitleEn.value,
+            subtitle_id: fieldSubtitleId.value, subtitle_en: fieldSubtitleEn.value,
+            price: fieldPrice.value,
+            category: fieldCategories.value.split(',').map(c => c.trim()),
+            tags: fieldCategories.value.split(',').map(c => c.trim()).filter(c => ['online', 'offline', 'hybrid'].includes(c))
+        };
+
+        if (id) { // Update existing
+            const index = programs.findIndex(p => p.id === id);
+            programs[index] = { ...programs[index], ...newProgramData };
+        } else { // Add new
+            newProgramData.id = Date.now(); // Simple unique ID
+            programs.push(newProgramData);
+        }
+        savePrograms();
+        refreshUI();
+        hideForm();
+    });
+}
+
 // Tab events attach after DOM ready
 document.addEventListener('DOMContentLoaded', ()=>{
   const grid = document.getElementById('grid');
@@ -303,15 +441,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   });
 
+  loadPrograms();
   buildCards();
   updateText();
+  setupAdminPanel();
+
   // attach tab events
   tabBtns().forEach(btn=>{
     btn.addEventListener('click', ()=> {
       const tab = btn.getAttribute('data-tab');
-      // remove show for all
-      document.querySelectorAll('.card').forEach(c=> c.classList.remove('show'));
-      setTimeout(()=> activateTab(tab, btn), 80);
+      activateTab(tab, btn);
     });
   });
 
